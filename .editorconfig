@@ -1,0 +1,16 @@
+root = true
+
+[*.cs]
+# 局部变量一律用 var（字段 / 属性 / 参数 / 常量不受影响，它们不能用 var）
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_when_types_are_apparent = true:warning
+csharp_style_var_elsewhere = true:warning
+
+# new() 的目标类型推断（与 var 配合）
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+
+[*.{csproj,props,targets}]
+indent_size = 2
+
+[*.{json,yml,yaml}]
+indent_size = 2

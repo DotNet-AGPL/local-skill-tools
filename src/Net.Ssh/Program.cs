@@ -208,18 +208,7 @@ internal static class Program
                     stop.Set();
                 };
 
-                PosixSignalRegistration? term = null;
-
-                if (!OperatingSystem.IsWindows())
-                {
-                    term = PosixSignalRegistration.Create(PosixSignal.SIGTERM, context =>
-                    {
-                        context.Cancel = true;
-                        stop.Set();
-                    });
-                }
-
-                try
+                void WaitForStop()
                 {
                     if (duration > 0)
                     {
@@ -230,11 +219,21 @@ internal static class Program
                         stop.Wait();
                     }
                 }
-                finally
-                {
-                    term?.Dispose();
-                }
 
+                if (OperatingSystem.IsWindows())
+                {
+                    WaitForStop();
+                }
+                else
+                {
+                    using var term = PosixSignalRegistration.Create(PosixSignal.SIGTERM, context =>
+                    {
+                        context.Cancel = true;
+                        stop.Set();
+                    });
+
+                    WaitForStop();
+                }
                 ConsoleOut.Info("隧道已关闭");
                 return 0;
             }

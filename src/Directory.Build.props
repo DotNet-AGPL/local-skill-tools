@@ -10,6 +10,8 @@
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <EnableAotAnalyzer>true</EnableAotAnalyzer>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <!-- 让 .editorconfig 里的代码风格规则（IDE0007 var 等）在构建时生效 -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
