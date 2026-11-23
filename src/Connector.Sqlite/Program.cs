@@ -5,14 +5,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using Microsoft.Data.Sqlite;
 
-try
-{
-    return SqliteCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => SqliteCli.Run(args));
 
 internal static class SqliteCli
 {

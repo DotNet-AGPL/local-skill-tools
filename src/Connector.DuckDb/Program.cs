@@ -5,14 +5,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using DuckDB.NET.Data;
 
-try
-{
-    return DuckDbCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => DuckDbCli.Run(args));
 
 internal static class DuckDbCli
 {

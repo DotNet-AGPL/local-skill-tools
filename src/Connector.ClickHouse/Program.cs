@@ -6,14 +6,7 @@ using ClickHouse.Driver;
 using Connector.Core.Cli;
 using Connector.Core.Output;
 
-try
-{
-    return ClickHouseCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => ClickHouseCli.Run(args));
 
 internal static class ClickHouseCli
 {

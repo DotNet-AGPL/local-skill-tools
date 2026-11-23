@@ -7,14 +7,7 @@ using Connector.Core.Output;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 
-try
-{
-    return OracleCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => OracleCli.Run(args));
 
 internal static class OracleCli
 {

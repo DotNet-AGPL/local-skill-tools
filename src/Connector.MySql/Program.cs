@@ -4,14 +4,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using MySqlConnector;
 
-try
-{
-    return MySqlCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => MySqlCli.Run(args));
 
 internal static class MySqlCli
 {

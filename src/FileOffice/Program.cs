@@ -9,14 +9,7 @@ using Wisdom.Office;
 using Wisdom.Office.Core;
 using Wisdom.Word;
 
-try
-{
-    return OfficeCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => OfficeCli.Run(args));
 
 internal static class OfficeCli
 {
@@ -173,12 +166,12 @@ internal static class OfficeCli
             var sourcePath = parsed.Positionals[0];
             var targetPath = parsed.Positionals[1];
             var targetFormat = FormatOf(targetPath)
-                ?? throw new InvalidOperationException($"不支持的输出扩展名: {Path.GetExtension(targetPath)}");
+                ?? throw new UserErrorException($"不支持的输出扩展名: {Path.GetExtension(targetPath)}");
 
             var targetDir = Path.GetDirectoryName(Path.GetFullPath(targetPath));
             if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
             {
-                throw new DirectoryNotFoundException($"输出目录不存在: {targetDir}");
+                throw new UserErrorException($"输出目录不存在: {targetDir}");
             }
 
             ConsoleOut.Info($"读取 {Path.GetFileName(sourcePath)} ...");
@@ -237,7 +230,7 @@ internal static class OfficeCli
             {
                 if (file.Workbook is null)
                 {
-                    throw new InvalidOperationException("只有电子表格可以输出为 xlsx（Word / PDF → Excel 不支持）");
+                    throw new UserErrorException("只有电子表格可以输出为 xlsx（Word / PDF → Excel 不支持）");
                 }
 
                 file.Save(targetPath, OfficeFileFormat.Xlsx);
@@ -248,7 +241,7 @@ internal static class OfficeCli
             }
             else
             {
-                throw new InvalidOperationException($"{file.Format} → {targetFormat} 不支持");
+                throw new UserErrorException($"{file.Format} → {targetFormat} 不支持");
             }
 
             ConsoleOut.Info($"✓ 已写出 {targetPath}（{new FileInfo(targetPath).Length / 1024} KB）");
@@ -273,17 +266,17 @@ internal static class OfficeCli
 
             if (!File.Exists(templatePath))
             {
-                throw new FileNotFoundException($"模板不存在: {templatePath}");
+                throw new UserErrorException($"模板不存在: {templatePath}");
             }
 
             if (!File.Exists(valuesPath))
             {
-                throw new FileNotFoundException($"变量文件不存在: {valuesPath}");
+                throw new UserErrorException($"变量文件不存在: {valuesPath}");
             }
 
             using var document = JsonDocument.Parse(File.ReadAllText(valuesPath));
             var values = ToObject(document.RootElement) as Dictionary<string, object?>
-                ?? throw new InvalidOperationException("vars.json 顶层必须是对象");
+                ?? throw new UserErrorException("vars.json 顶层必须是对象");
 
             var context = new TemplateContext();
 
@@ -308,7 +301,7 @@ internal static class OfficeCli
                     XlsxTemplate.Fill(templatePath, outputPath, context, options);
                     break;
                 default:
-                    throw new InvalidOperationException("模板只支持 .docx / .xlsx");
+                    throw new UserErrorException("模板只支持 .docx / .xlsx");
             }
 
             ConsoleOut.Info($"✓ 已写出 {outputPath}（{new FileInfo(outputPath).Length / 1024} KB）");
@@ -320,7 +313,7 @@ internal static class OfficeCli
     {
         if (!File.Exists(path))
         {
-            throw new FileNotFoundException($"文件不存在: {path}");
+            throw new UserErrorException($"文件不存在: {path}");
         }
 
         var format = OfficeFileFormats.Detect(path);
@@ -333,7 +326,7 @@ internal static class OfficeCli
                 return OfficeFile.FromDocument(Markdown.LoadFile(path));
             }
 
-            throw new InvalidOperationException($"无法识别的文件格式: {path}");
+            throw new UserErrorException($"无法识别的文件格式: {path}");
         }
 
         return format == OfficeFileFormat.Markdown
@@ -363,7 +356,7 @@ internal static class OfficeCli
             return PresentationToDocumentConverter.Convert(presentation, includeNotes);
         }
 
-        throw new InvalidOperationException($"格式 {file.Format} 无法转换为文档模型");
+        throw new UserErrorException($"格式 {file.Format} 无法转换为文档模型");
     }
 
     private static string ToMarkdownText(OfficeFile file, bool includeNotes)
@@ -451,7 +444,7 @@ internal static class OfficeCli
         }
         catch (Exception error)
         {
-            ConsoleOut.Error($"✗ {error.GetType().Name}: {error.Message}");
+            ConsoleOut.Error(CliHost.Describe(error));
             return 1;
         }
     }

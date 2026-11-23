@@ -18,14 +18,7 @@ BsonSerializer.RegisterSerializer(
     typeof(System.Dynamic.ExpandoObject),
     new ExpandoObjectSerializer());
 
-try
-{
-    return MongoCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => MongoCli.Run(args));
 
 internal static class MongoCli
 {

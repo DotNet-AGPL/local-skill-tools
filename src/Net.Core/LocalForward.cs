@@ -1,3 +1,4 @@
+using Connector.Core.Cli;
 using System.Text;
 using Renci.SshNet;
 
@@ -119,7 +120,7 @@ public static class SshForwarding
             catch (Exception error)
             {
                 Stop(client, started);
-                throw new InvalidOperationException($"无法建立转发 {forward}：{error.Message}", error);
+                throw new UserErrorException($"无法建立转发 {forward}：{error.Message}", error);
             }
 
             started.Add(port);

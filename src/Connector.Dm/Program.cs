@@ -6,14 +6,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using Dm;
 
-try
-{
-    return DmCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => DmCli.Run(args));
 
 internal static class DmCli
 {

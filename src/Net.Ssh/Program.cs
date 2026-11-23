@@ -38,17 +38,7 @@ internal static class Program
         OptionDef.Value("-f", "--file"),
     ];
 
-    private static int Main(string[] args)
-    {
-        try
-        {
-            return Run(args);
-        }
-        finally
-        {
-            ConsoleOut.Flush();
-        }
-    }
+    private static int Main(string[] args) => CliHost.Run(() => Run(args));
 
     private static int Run(string[] args)
     {
@@ -153,7 +143,7 @@ internal static class Program
         }
         catch (Exception error)
         {
-            ConsoleOut.Error($"✗ {error.GetType().Name}: {error.Message}");
+            ConsoleOut.Error(CliHost.Describe(error));
             return 1;
         }
     }
@@ -244,7 +234,7 @@ internal static class Program
         }
         catch (Exception error)
         {
-            ConsoleOut.Error($"✗ {error.GetType().Name}: {error.Message}");
+            ConsoleOut.Error(CliHost.Describe(error));
             return 1;
         }
     }

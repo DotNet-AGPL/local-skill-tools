@@ -5,14 +5,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using StackExchange.Redis;
 
-try
-{
-    return RedisCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => RedisCli.Run(args));
 
 internal static class RedisCli
 {

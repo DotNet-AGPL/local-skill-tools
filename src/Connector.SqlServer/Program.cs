@@ -6,14 +6,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using Microsoft.Data.SqlClient;
 
-try
-{
-    return SqlServerCli.Run(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return CliHost.Run(() => SqlServerCli.Run(args));
 
 internal static class SqlServerCli
 {

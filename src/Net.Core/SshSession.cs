@@ -1,3 +1,4 @@
+using Connector.Core.Cli;
 using Connector.Core.Output;
 using Renci.SshNet;
 
@@ -49,7 +50,7 @@ public static class SshSession
 
         if (methods.Count == 0)
         {
-            throw new InvalidOperationException(
+            throw new UserErrorException(
                 "没有可用的认证方式：请用 -i <私钥> 指定密钥，或用 --password-stdin 从标准输入读密码");
         }
 

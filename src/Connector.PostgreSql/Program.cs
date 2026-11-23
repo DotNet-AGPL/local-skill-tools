@@ -4,14 +4,7 @@ using Connector.Core.Cli;
 using Connector.Core.Output;
 using Npgsql;
 
-try
-{
-    return await PostgresCli.RunAsync(args);
-}
-finally
-{
-    ConsoleOut.Flush();
-}
+return await CliHost.RunAsync(() => PostgresCli.RunAsync(args));
 
 internal static class PostgresCli
 {
